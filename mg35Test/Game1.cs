@@ -11,11 +11,16 @@ namespace mg35Test
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        Texture2D faceplate, needle;
+        Vector2 needlePos, needleOrg;
+        Rectangle needleRect;
+        float rads = 0;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            needlePos = new Vector2(150, 150);
+            
         }
 
         /// <summary>
@@ -39,7 +44,10 @@ namespace mg35Test
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            faceplate = this.Content.Load<Texture2D>("resources/faceplate");
+            needle = this.Content.Load<Texture2D>("resources/needle");
+            needleRect = new Rectangle(0, 0, needle.Width, needle.Height);
+            needleOrg = new Vector2(needle.Width / 2, needle.Height - 35);
             // TODO: use this.Content to load your game content here
         }
 
@@ -50,6 +58,7 @@ namespace mg35Test
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
+            Content.Unload();
         }
 
         /// <summary>
@@ -61,7 +70,7 @@ namespace mg35Test
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            rads++;
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -74,7 +83,10 @@ namespace mg35Test
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            spriteBatch.Begin();
+            spriteBatch.Draw(faceplate, Vector2.Zero);
+            spriteBatch.Draw(needle, needlePos, needleRect, Color.White, rads*0.0174f, needleOrg, 0.9f, SpriteEffects.None, 1);
+            spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
