@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MoonSharp.Interpreter;
+using System;
 
 namespace mg35Test
 {
@@ -11,16 +13,22 @@ namespace mg35Test
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D faceplate, needle;
-        Vector2 needlePos, needleOrg;
-        Rectangle needleRect;
-        float rads = 0;
+        Script gauge;
+        SpriteStore store;
+        //ASI asi;
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            UserData.RegisterType<Guid>();
             Content.RootDirectory = "Content";
-            needlePos = new Vector2(150, 150);
-            
+            gauge = new Script();
+            store = new SpriteStore(Content);
+            gauge.Globals["Test"] = (System.Action) store.test;
+            gauge.Globals["addSprite"] = (Func<string,float,float,int?,int?,Guid>) store.addSprite;
+           
+
+
         }
 
         /// <summary>
@@ -44,11 +52,11 @@ namespace mg35Test
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            faceplate = this.Content.Load<Texture2D>("resources/faceplate");
-            needle = this.Content.Load<Texture2D>("resources/needle");
-            needleRect = new Rectangle(0, 0, needle.Width, needle.Height);
-            needleOrg = new Vector2(needle.Width / 2, needle.Height - 35);
+            // asi = new mg35Test.ASI(Content);
+            gauge.DoFile("scripts/gauge.lua");
             // TODO: use this.Content to load your game content here
+            //store.addSprite("resources/faceplate", 0, 0, null, null);
+            //store.addSprite("resources/needle", 150, 150, null, null);
         }
 
         /// <summary>
@@ -70,9 +78,9 @@ namespace mg35Test
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            rads++;
-            // TODO: Add your update logic here
 
+            // TODO: Add your update logic here
+            //asi.update();
             base.Update(gameTime);
         }
 
@@ -84,8 +92,8 @@ namespace mg35Test
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            spriteBatch.Draw(faceplate, Vector2.Zero);
-            spriteBatch.Draw(needle, needlePos, needleRect, Color.White, rads*0.0174f, needleOrg, 0.9f, SpriteEffects.None, 1);
+            //asi.Draw(spriteBatch);
+            store.draw(spriteBatch);
             spriteBatch.End();
             // TODO: Add your drawing code here
 
