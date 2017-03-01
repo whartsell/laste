@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MoonSharp.Interpreter;
-using MoonSharp.Interpreter.Interop;
 using System;
 using System.Collections.Generic;
 
@@ -77,5 +76,20 @@ namespace mg35Test
             }
             RegisteredCallbacks.Add(callback, keys);
         }
+
+        public HashSet<string> getAllSubscribedKeys()
+        {
+            HashSet<string> keys = new HashSet<string>();
+            foreach (var pair in RegisteredCallbacks)
+            {
+                foreach (string key in pair.Value)
+                {
+                    keys.Add(key);
+                }
+            }
+            return keys;
+        }
+
+
     }
 }

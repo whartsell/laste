@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace mg35Test
 {
@@ -10,13 +9,6 @@ namespace mg35Test
         protected Texture2D texture;   //image to load as texture.  Currently limited to whats in the content store
         private ContentManager Content;
         private float radians = 0.0174533f;
-        //int x, y, width, height;            //raw x,y,width and height.  May not be needed.
-        Vector2 position;                   //upper left corner of texture
-        Rectangle destination;              //rectangle where image will be shown.
-        Vector2 origin;                     // center of rotation
-        float rotation;                     // how far to rotate image in radians
-        bool visible;                       // is the image visible;
-        Color mask;
         private Vector2 scale;
         // TODO need to use width,height to create scale so people can set size
 

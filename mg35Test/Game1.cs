@@ -16,6 +16,8 @@ namespace mg35Test
         Script gauge;
         SpriteStore store;
         KeyValueStore kvStore;
+        Network network;
+        Protocol protocol;
         int rotation;
         //ASI asi;
         
@@ -27,12 +29,17 @@ namespace mg35Test
             gauge = new Script();
             store = new SpriteStore(Content,gauge);
             kvStore = new KeyValueStore();
+            network = new Network(12800);
+            protocol = new Protocol(kvStore,store,network);
+
+
             gauge.Globals["Test"] = (System.Action) store.test;
             gauge.Globals["addSprite"] = (Func<string,float,float,int?,int?,Guid>) store.addSprite;
             gauge.Globals["rotateSprite"] = (System.Action<Guid, float>)store.rotateSprite;
             gauge.Globals["setSpriteOrigin"] = (System.Action<Guid, float, float>)store.setSpriteOrigin;
             gauge.Globals["subscribeSprite"] = (System.Action<object[]>) store.subscribeSprite;
-
+            gauge.Globals["setAircraftType"] = (System.Action<string>)kvStore.setAircraftType;
+            
 
         }
 
@@ -48,6 +55,8 @@ namespace mg35Test
            
             base.Initialize();
             rotation = 0;
+            network.MessageReceived += protocol.MessageReceivedHandler;
+            network.Start();
         }
 
         /// <summary>
@@ -73,6 +82,7 @@ namespace mg35Test
         {
             // TODO: Unload any non ContentManager content here
             Content.Unload();
+            network.Stop();
         }
 
         /// <summary>
