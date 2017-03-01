@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ASI.cs" />
+    <Compile Include="KeyValueStore.cs" />
     <Compile Include="SpriteStore.cs" />
     <Compile Include="Sprite.cs" />
     <Compile Include="Game1.cs" />

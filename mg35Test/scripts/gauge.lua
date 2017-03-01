@@ -5,7 +5,8 @@ setSpriteOrigin(needle,10,130)
 
 function testCallback(test)
 	print(test)
+	rotateSprite(needle,test)
 end
 
 
-subscribeSprite("Yo Mamma is a snow blower",testCallback)
+subscribeSprite("Test",testCallback)

@@ -15,6 +15,8 @@ namespace mg35Test
         SpriteBatch spriteBatch;
         Script gauge;
         SpriteStore store;
+        KeyValueStore kvStore;
+        int rotation;
         //ASI asi;
         
         public Game1()
@@ -24,6 +26,7 @@ namespace mg35Test
             Content.RootDirectory = "Content";
             gauge = new Script();
             store = new SpriteStore(Content,gauge);
+            kvStore = new KeyValueStore();
             gauge.Globals["Test"] = (System.Action) store.test;
             gauge.Globals["addSprite"] = (Func<string,float,float,int?,int?,Guid>) store.addSprite;
             gauge.Globals["rotateSprite"] = (System.Action<Guid, float>)store.rotateSprite;
@@ -42,8 +45,9 @@ namespace mg35Test
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+           
             base.Initialize();
+            rotation = 0;
         }
 
         /// <summary>
@@ -83,6 +87,8 @@ namespace mg35Test
 
             // TODO: Add your update logic here
             //asi.update();
+            kvStore.set("Test", rotation++);
+            kvStore.update(store);
             base.Update(gameTime);
         }
 

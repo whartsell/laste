@@ -13,12 +13,16 @@ namespace mg35Test
         ContentManager Content;
         Script Script;
         Dictionary<Guid,Sprite> Sprites;
+        //Dictionary<Closure, List<string>> RegisteredCallbacks;
+
+        public Dictionary<Closure,List<string>> RegisteredCallbacks { get;}
 
         public SpriteStore(ContentManager content,Script script)
         {
             Sprites = new Dictionary<Guid,Sprite>();
             Content = content;
             Script = script;
+            RegisteredCallbacks = new Dictionary<Closure, List<string>>();
 
 
         }
@@ -59,14 +63,19 @@ namespace mg35Test
             // the last param is always the callback
             Closure callback = (Closure)list[list.Length - 1]; // last element is always the name of the callback
             Console.WriteLine("callback is {0} - {1}", callback.GetType().ToString(),callback.ToString());
-            List<object> parameters = new List<object>() ; 
+            List<string> keys = new List<string>() ; 
             for (int i = 0; i <list.Length-1; i++)
             {
-                Console.WriteLine("Param {0}: {1}", i, DynValue.FromObject(Script,list[i]).Type);
-                parameters.Add(list[i]);
+                DynValue value = DynValue.FromObject(Script, list[i]);
+                Console.WriteLine("Param {0}: {1}", i, value.Type);
+                if (value.Type == DataType.String)
+                {
+                    Console.WriteLine("adding {0} to keys",value.String);
+                    keys.Add(value.String);
+                }
+                    
             }
-            callback.Call(parameters.ToArray());
-
+            RegisteredCallbacks.Add(callback, keys);
         }
     }
 }
