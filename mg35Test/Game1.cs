@@ -23,10 +23,12 @@ namespace mg35Test
             UserData.RegisterType<Guid>();
             Content.RootDirectory = "Content";
             gauge = new Script();
-            store = new SpriteStore(Content);
+            store = new SpriteStore(Content,gauge);
             gauge.Globals["Test"] = (System.Action) store.test;
             gauge.Globals["addSprite"] = (Func<string,float,float,int?,int?,Guid>) store.addSprite;
-           
+            gauge.Globals["rotateSprite"] = (System.Action<Guid, float>)store.rotateSprite;
+            gauge.Globals["setSpriteOrigin"] = (System.Action<Guid, float, float>)store.setSpriteOrigin;
+            gauge.Globals["subscribeSprite"] = (System.Action<object[]>) store.subscribeSprite;
 
 
         }
