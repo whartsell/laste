@@ -1,13 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 
 namespace mg35Test
 {
     public class Sprite
     {
         protected Texture2D texture;   //image to load as texture.  Currently limited to whats in the content store
-        private ContentManager Content;
+        private GraphicsDevice graphicsDevice;
         private float radians = 0.0174533f;
         private Vector2 scale;
         // TODO need to use width,height to create scale so people can set size
@@ -29,46 +30,52 @@ namespace mg35Test
             }
         }
 
-        public Vector2 Position { get; set; }
-        public Rectangle Destination { get; set; }
-        public Vector2 Origin { get; set; }
+        //public Vector2 Position { get; set; }
+        public Rectangle Destination { get; set; } // this is where on the screen it will be drawn.
+        public Rectangle? ViewPort { get; set; }   // this is what part of the texture that will actually be seen at the destination above
+        public Vector2? Origin { get; set; }
         public float Rotation { get; set; }
         public bool Visible { get; set; }
-        public Color Mask { get; set; }
+        public Color? Mask { get; set; }
         
 
 
 
 
-        public Sprite(ContentManager content,string assetName,float x, float y, int? width, int? height)
+        public Sprite(GraphicsDevice graphicsDevice,string assetName,int x, int y, int? width, int? height)
         {
-            Content = content;
+            this.graphicsDevice = graphicsDevice;
             int _width, _height;
-            texture = this.Content.Load<Texture2D>(assetName);
-            if (x == 0 & y == 0)
+            //texture = this.graphicsDevice.Load<Texture2D>(assetName);
+            using (FileStream fs = File.OpenRead(assetName))
             {
-                this.Position = Vector2.Zero;
+                texture = Texture2D.FromStream(graphicsDevice, fs);
             }
-            else
-            {
-                this.Position = new Vector2(x, y);
-            }
+            //if (x == 0 & y == 0)
+            //{
+            //    this.Position = Vector2.Zero;
+            //}
+            //else
+            //{
+            //    this.Position = new Vector2(x, y);
+            //}
 
             _width = (width == null) ? texture.Width : (int)width;
             _height = (height == null) ? texture.Height : (int)height;
-            scale = new Vector2(_width / texture.Width, _height / texture.Height);
+            this.Destination = new Rectangle(x, y, _width, _height);
+
+            //scale = new Vector2(_width / texture.Width, _height / texture.Height);
+            scale = new Vector2(0.25f, 0.25f);
             Mask = Color.White;
+            
         }
 
        
         public void draw(SpriteBatch spriteBatch)
         {
-            if (Destination == Rectangle.Empty)
-            {
-                spriteBatch.Draw(texture, Position, null, null, Origin, Rotation * radians, scale, Mask);
-            }
-            else
-                spriteBatch.Draw(texture, Position, Destination, null, Origin, Rotation * radians, scale, Mask);
+           
+           
+            spriteBatch.Draw(texture, null, Destination, ViewPort, Origin, Rotation * radians,scale, Mask);
 
         }
 

@@ -4,32 +4,34 @@ using Microsoft.Xna.Framework.Graphics;
 using MoonSharp.Interpreter;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace mg35Test
 {
     class SpriteStore
     {
-        ContentManager Content;
+        GraphicsDevice graphicsDevice;
         Script Script;
-        Dictionary<Guid,Sprite> Sprites;
+        Dictionary<Guid,Sprite> Sprites; //TODO: need to create a type safe ordered dictionary class
+        
         //Dictionary<Closure, List<string>> RegisteredCallbacks;
 
         public Dictionary<Closure,List<string>> RegisteredCallbacks { get;}
 
-        public SpriteStore(ContentManager content,Script script)
+        public SpriteStore(GraphicsDevice gDevice,Script script)
         {
             Sprites = new Dictionary<Guid,Sprite>();
-            Content = content;
+            graphicsDevice = gDevice;
             Script = script;
             RegisteredCallbacks = new Dictionary<Closure, List<string>>();
 
 
         }
 
-        public Guid addSprite(string assetName,float x,float y, int? width, int? height)
+        public Guid addSprite(string assetName,int x,int y, int? width, int? height)
         {
             Guid guid;
-            Sprite sprite = new Sprite(Content, assetName, x, y, width, height);
+            Sprite sprite = new Sprite(graphicsDevice, assetName, x, y, width, height);
             guid = Guid.NewGuid();
             Sprites.Add(guid, sprite);
             return guid;
@@ -38,6 +40,11 @@ namespace mg35Test
         public void rotateSprite(Guid id,float angle)
         {
             Sprites[id].Rotation = angle;
+        }
+
+        public void spriteViewPort(Guid id, int x, int y, int width, int height)
+        {
+            Sprites[id].ViewPort = new Rectangle(x, y, width, height);
         }
 
         public void draw(SpriteBatch spriteBatch)

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MoonSharp.Interpreter;
 using System;
+using System.IO;
 
 namespace mg35Test
 {
@@ -19,27 +20,19 @@ namespace mg35Test
         Network network;
         Protocol protocol;
         int rotation;
+        Texture2D test;
+        Rectangle srcRect;
+        Rectangle dstRect;
+        string aFile;
         //ASI asi;
-        
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            UserData.RegisterType<Guid>();
-            Content.RootDirectory = "Content";
-            gauge = new Script();
-            store = new SpriteStore(Content,gauge);
-            kvStore = new KeyValueStore();
-            network = new Network(12800);
-            protocol = new Protocol(kvStore,store,network);
-
-
-            gauge.Globals["Test"] = (System.Action) store.test;
-            gauge.Globals["addSprite"] = (Func<string,float,float,int?,int?,Guid>) store.addSprite;
-            gauge.Globals["rotateSprite"] = (System.Action<Guid, float>)store.rotateSprite;
-            gauge.Globals["setSpriteOrigin"] = (System.Action<Guid, float, float>)store.setSpriteOrigin;
-            gauge.Globals["subscribeSprite"] = (System.Action<object[]>) store.subscribeSprite;
-            gauge.Globals["setAircraftType"] = (System.Action<string>)kvStore.setAircraftType;
             
+            Content.RootDirectory = "Content";
+            
+           
 
         }
 
@@ -52,11 +45,31 @@ namespace mg35Test
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-           
-            base.Initialize();
+            UserData.RegisterType<Guid>();
+            gauge = new Script();
+            store = new SpriteStore(graphics.GraphicsDevice, gauge);
+            kvStore = new KeyValueStore();
+            network = new Network(12800);
+            protocol = new Protocol(kvStore, store, network);
+
+
+            gauge.Globals["Test"] = (System.Action)store.test;
+            gauge.Globals["addSprite"] = (Func<string, int, int, int?, int?, Guid>)store.addSprite;
+            gauge.Globals["rotateSprite"] = (System.Action<Guid, float>)store.rotateSprite;
+            gauge.Globals["setSpriteOrigin"] = (System.Action<Guid, float, float>)store.setSpriteOrigin;
+            gauge.Globals["subscribeSprite"] = (System.Action<object[]>)store.subscribeSprite;
+            gauge.Globals["setAircraftType"] = (System.Action<string>)kvStore.setAircraftType;
+            gauge.Globals["setSpriteViewPort"] = (System.Action<Guid, int, int, int, int>)store.spriteViewPort;
             rotation = 0;
             network.MessageReceived += protocol.MessageReceivedHandler;
             network.Start();
+            aFile = "C:/Users/whartsell/Documents/ARU-2/resources/Horizon.png";
+            using (FileStream fs = File.OpenRead(aFile))
+            {
+                test = Texture2D.FromStream(graphics.GraphicsDevice, fs);
+            }
+            base.Initialize();
+            
         }
 
         /// <summary>
@@ -99,7 +112,12 @@ namespace mg35Test
             //asi.update();
             kvStore.set("Test", rotation++);
             kvStore.update(store);
+            srcRect = new Rectangle(0, 0, 338, 338);
+            srcRect.Y = 520;
+            dstRect = new Rectangle(0,0, 338, 338);
+
             base.Update(gameTime);
+
         }
 
         /// <summary>
@@ -112,6 +130,7 @@ namespace mg35Test
             spriteBatch.Begin();
             //asi.Draw(spriteBatch);
             store.draw(spriteBatch);
+            //spriteBatch.Draw(test,dstRect,srcRect,Color.White);
             spriteBatch.End();
             // TODO: Add your drawing code here
 
