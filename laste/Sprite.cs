@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 
-namespace mg35Test
+namespace laste
 {
     public class Sprite
     {
@@ -66,7 +66,8 @@ namespace mg35Test
 
             //scale = new Vector2(_width / texture.Width, _height / texture.Height);
             scale = new Vector2(0.25f, 0.25f);
-            Mask = Color.White;
+            Mask = Color.Green;
+            
             
         }
 

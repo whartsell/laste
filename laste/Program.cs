@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace mg35Test
+namespace laste
 {
     /// <summary>
     /// The main class.

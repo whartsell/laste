@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 
-namespace mg35Test
+namespace laste
 {
     class Protocol
     {

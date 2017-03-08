@@ -5,7 +5,7 @@ using MoonSharp.Interpreter;
 using System;
 using System.IO;
 
-namespace mg35Test
+namespace laste
 {
     /// <summary>
     /// This is the main type for your game.

@@ -1,7 +1,7 @@
 ﻿using MoonSharp.Interpreter;
 using System.Collections.Generic;
 
-namespace mg35Test
+namespace laste
 {
     class KeyValueStore
     {

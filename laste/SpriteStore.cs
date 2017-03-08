@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace mg35Test
+namespace laste
 {
     class SpriteStore
     {
